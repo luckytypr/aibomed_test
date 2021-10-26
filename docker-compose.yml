@@ -1,0 +1,54 @@
+version: '3.7'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  postgres:
+    container_name: local_server_postgres
+    image: postgres:13-alpine
+    env_file:
+      - ./.envs/.local/.postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+
+  redis:
+    container_name: local_server_redis
+    image: redis:6.0.4-alpine3.11
+    depends_on:
+      - postgres
+
+  django: &django
+    container_name: local_server_django
+    build: ./
+    volumes:
+      - ./src:/src:rw
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.envs/.local/.postgres
+      - ./.envs/.local/.django
+      - ./.envs/.local/.redis
+    environment:
+      PROCESS: DEV_DJANGO
+
+  celery:
+    <<: *django
+    container_name: local_server_celery
+    build: ./
+    ports: [ ]
+    environment:
+      PROCESS: DEV_CELERY
+
+  celerybeat:
+    <<: *django
+    container_name: local_beat
+    build: ./
+    ports: [ ]
+    environment:
+      PROCESS: DEV_BEAT

@@ -18,6 +18,10 @@ case "$PROCESS" in
     wait_for "${BROKER_HOST}" "${BROKER_PORT}"
     celery -A apps.taskapp worker -B --loglevel=INFO --concurrency=1
     ;;
+"DEV_BEAT")
+    wait_for "${BROKER_HOST}" "${BROKER_PORT}"
+    celery -A apps.taskapp beat --loglevel=INFO
+    ;;
 "TEST")
     wait_for "${POSTGRES_HOST}" "${POSTGRES_PORT}"
     pytest -v --cov . --cov-report term-missing --cov-fail-under=100 \

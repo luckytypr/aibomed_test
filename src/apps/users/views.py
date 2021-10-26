@@ -1,4 +1,3 @@
-import logging
 from django.utils.translation import gettext_lazy as _
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -21,8 +20,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-logger = logging.getLogger(__name__)
-
 
 class UserListApi(APIView):
     api_description = _('List of users')
@@ -32,7 +29,7 @@ class UserListApi(APIView):
             ref_name = 'UserListOutputSerializer'
             model = User
             fields = (
-                'email', 'first_name',
+                'id', 'email', 'first_name',
                 'last_name', 'patronymic',
                 'last_login'
             )
@@ -60,7 +57,6 @@ class UserListApi(APIView):
 
 class MyProfileDetailApi(APIView):
     api_description = _('My profile details information')
-    permission_classes = (IsAuthenticated, )
 
     class OutputSerializer(serializers.ModelSerializer):
         class Meta:
@@ -114,7 +110,7 @@ class UserRegisterApi(APIView):
         serializer = self.InputSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.data
-        email = validated_data.pop('email', None)
+        email = validated_data.pop('email')
         password1 = validated_data.pop('password1', None)
         password2 = validated_data.pop('password2', None)
         create_user(

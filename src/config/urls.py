@@ -17,6 +17,7 @@ from rest_framework import routers
 api_urlpatterns = [
     path('auth/', include('apps.auth.urls')),
     path('users/', include('apps.users.urls')),
+    path('tasks/', include('apps.tasks.urls')),
 ]
 
 urlpatterns = [

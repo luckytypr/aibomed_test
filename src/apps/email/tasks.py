@@ -24,7 +24,7 @@ class BaseEmailSenderTask(Task):
         if pre_result:
             return pre_result
 
-        recepients = kwargs['email']
+        recepients = kwargs['emails']
         if isinstance(recepients, str):
             recepients = recepients.split(',')
 

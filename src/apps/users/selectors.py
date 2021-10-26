@@ -8,3 +8,7 @@ def list_users(*, filters=None):
     users = User.objects.all()
     return users
 
+
+def get_user(*, user_id: str):
+    user = get_object_or_404(User, id=user_id)
+    return user

@@ -14,3 +14,10 @@ app = Celery("apps")
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
+
+app.conf.beat_schedule = {
+    'notify-on-task-expiration-task': {
+        'task': 'apps.tasks.tasks.notify_on_task_expiration_task',
+        'schedule': crontab(),
+    },
+}
